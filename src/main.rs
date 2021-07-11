@@ -56,13 +56,12 @@ async fn peer_handler(data: Data<AppState>, request: Json<Message>) -> String {
 #[get("/app/digest")]
 async fn digest_handler(data: Data<AppState>) -> String {
   match ((& data.client_messages).lock(), (& data.peer_messages).lock()) {
-    (Ok(mut client_messages), Ok(mut peer_messages)) => {
+    (Ok(client_messages), Ok(peer_messages)) => {
       let message_count = client_messages.len() + peer_messages.len();
-      client_messages.sort();
-      peer_messages.sort();
       let mut raw_messages: Vec<String> = vec![];
       let _ = client_messages.iter().map(|message| raw_messages.push(message.to_string())).collect::<Vec<()>>();
       let _ = peer_messages.iter().map(|message| raw_messages.push(message.to_string())).collect::<Vec<()>>();
+      raw_messages.sort();
       let mut digest = Sha256::new();
       digest.update(raw_messages.join(""));
       format!("{{ \"digest\": \"{:X}\", \"count\": {} }}", digest.finalize(), message_count)
