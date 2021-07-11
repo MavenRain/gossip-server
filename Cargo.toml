@@ -1,0 +1,13 @@
+cargo-features = ["edition2021"]
+
+[package]
+name = "gossip-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "3"
+serde = "1.0.126"
+sha2 = "0.9.5"
+structopt = "0.3.22"
+ureq = { version = "2.1.1", features = ["json"] }
